@@ -1,14 +1,17 @@
 name: Supply Chain
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: 0 0 * * 0
+on: [ push, workflow_dispatch ]
+
 jobs:
    bridgecrew:
     runs-on: ubuntu-latest
     steps:
-    - name: Run checkov
-      id: checkov
-      uses: bridgecrewio/checkov-action@master
-      env:
-        GITHUB_TOKEN: ${{secrets.THIS_IS_A_TEST_SECRET}}
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Run Prisma Cloud 
+        id: prisma-cloud
+        uses: bridgecrewio/checkov-action@master
+        env:
+          PRISMA_API_URL: https://api.jp.prismacloud.io
+        with:
+          api-key: ${{ secrets.BC_API_KEY }}
